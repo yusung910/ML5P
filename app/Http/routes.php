@@ -11,7 +11,16 @@
 |
 */
 
-Route::get('/', 'WelcomeController@index');
+Route::get('/', function(){
+  $currentUser = Auth::user();
+  if(empty($currentUser)){
+    $name = 'Guest';
+  }else{
+    $name = $currentUser->name;
+  }
+
+  return "Hello, $name!!";
+});
 
 Route::get('home', 'HomeController@index');
 
@@ -19,3 +28,8 @@ Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+
+$router->resource('posts', 'PostsController');
+
+$router->get('register', ['uses'=>'RegisterController@create', 'as'=>'register']);
+$router->post('register', ['uses'=>'RegisterController@store', 'as'=>'register']);
